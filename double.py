@@ -57,6 +57,8 @@ while 1:
         else:
             break
 
+print 
+
 ### Path processing for robot1 (master)
 population = [] # Population of current generation
 
@@ -136,5 +138,13 @@ path2 = population[0]
 # Multi robot coordination part
 # Prediction: Estimate robot1's location in time and anticipate collision by altering robot2's path
 
+print "***"
+print "Initial paths generated:"
 print "Robot1's path: ", final_path1[0]
 print "Robot2's path: ", path2[0]
+print "***"
+
+collision_bool = detect_collision(final_path1[0], path2[0])
+if (collision_bool):
+    print "Resolving collision, generating possible solutions:"
+print "***"
