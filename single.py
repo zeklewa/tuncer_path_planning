@@ -89,3 +89,14 @@ for gen in range(tuncer_globals.num_gens):
 # Print best candidate for generation
 print "***"
 print "Best candidate found after " + str(tuncer_globals.num_gens) + " generations", population[0][0]
+
+path = population[0][0]
+
+path_name = raw_input("Save subpath name: ")
+
+f.close()
+f = open(map_name + "_" + path_name + ".path", "w")
+for x in path:
+    f.write("(%d %d) " % (x[0], x[1])),
+f.write("\n")
+f.close()

@@ -1,4 +1,4 @@
-**Overview**
+**Overview:**
 This repository contains the implementation of Tuncer's single-robot path planning algorithm, as well as that of an adapted multi-robot path planning algorithm.
 
 The original paper can be found here: [https://dl.acm.org/doi/10.1016/j.compeleceng.2012.06.016](https://dl.acm.org/doi/10.1016/j.compeleceng.2012.06.016)
@@ -10,6 +10,7 @@ To create an obstacle map, launch:
 
 Rectangular obstacles can be directly created on the generated map by clicking and dragging the mouse.
 After creating the obstacle map, either run `python single.py` for single-robot path planning, or `python double.py` for 2-robot path planning on the map.
+Finally, when the algorithm finishes, the final path(s) will be saved to a .path file of your choice. Additionally, the program `visualize.py` can be used to visualize these paths.
 
 **Example:**
 Running `single.py` and providing the corresponding inputs:

@@ -151,7 +151,25 @@ print col_tr1, col_tr2
 if (col_tr1 != -1):
     print "Collision detected!"
     print "Resolving collision, generating possible solutions:"
-    resolve_collision(path1[0], path2[0], col_tr1, col_tr2, 4)
+    for num_nodes in range(2, 5):
+        print "### Attempting to insert %d nodes" % num_nodes
+        fpath1, fpath2 = resolve_collision(path1[0], path2[0], col_tr1, col_tr2, num_nodes)
+        if (fpath1, fpath2) != ([], []): break
+print "***"
+print "Final generated paths: "
+print "Robot1: ", fpath1
+print "Robot2: ", fpath2
 print "***"
 
+# Exporting path to .path file
+path_name = raw_input("Save subpath name: ")
+
+f.close()
+f = open(map_name + "_" + path_name + ".path", "w")
+for x in fpath1:
+    f.write("(%d %d) " % (x[0], x[1])),
+f.write("\n")
+for x in fpath2:
+    f.write("(%d %d) " % (x[0], x[1])),
+f.write("\n")
 f.close()
