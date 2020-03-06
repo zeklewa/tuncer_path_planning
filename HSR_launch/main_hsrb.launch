@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+  <param name="/use_sim_time" value="true" />
+
+  <!-- start world -->
+  <!-- <node name="gazebo" pkg="gazebo" type="gazebo" 
+   args="$(find tmc_gazebo_worlds)/worlds/megaweb2015.world" respawn="false" output="screen" /> -->
+
+  <!-- start gui -->
+  <!-- <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen"/> -->
+
+  <!-- include our robots -->
+  <include file="$(find hsrb_gazebo_launch)/launch/include/hsrb_gazebo_common.xml" pass_all_args="true" >
+  	<arg name="world_name" value="$(find tmc_gazebo_worlds)/worlds/megaweb2015.world" />
+    <arg name="robot_pos" value="-x -1 -y -7.5 -z 0.32 -Y 1.57"/>
+  </include>
+
+  <!-- BEGIN ROBOT 1-->
+  <group ns="robot1">
+    <param name="tf_prefix" value="robot1_tf" />
+    <include file="$(find your_pkg)/launch/one_robot.launch" >
+      <arg name="init_pose" value="-x 1 -y 1 -z 0" />
+      <arg name="robot_name"  value="Robot1" />
+    </include>
+  </group>
+  
+</launch>

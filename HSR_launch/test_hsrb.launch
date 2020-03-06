@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="robot"      default="true" />
+    <arg name="gui"        default="true" />
+    <arg name="gravity"    default="true" />
+    <arg name="debug"      default="false" />
+    <arg name="paused"     default="true" />
+    <arg name="gazebo_visualization" default="false" />
+    <arg name="fast_physics" default="false" />
+    <arg name="namespace" default="/hsrb" />
+
+    <arg name="rviz" default="true"/>
+    <arg name="use_manipulation" default="true" />
+    <arg name="use_navigation" default="true" />
+    <arg name="use_perception" default="true" />
+    <arg name="use_task" default="true" />
+    <arg name="use_teleop" default="true" />
+    <arg name="use_web" default="true" />
+    <arg name="use_laser_odom" default="true" />
+    <arg name="map" default="$(optenv ROS_HOME ~/.ros)/map/map.yaml" />
+    <arg name="param_file" default="$(env HOME)/.ros/params.yaml" />
+
+    <arg unless="$(arg fast_physics)" name="world_suffix" value=""/>
+    <arg     if="$(arg fast_physics)" name="world_suffix" value="_fast"/>
+    <!-- <arg name="world_name" default="$(find tmc_gazebo_worlds)/worlds/empty$(arg world_suffix).world"/> -->
+    <arg name="world_name" value="$(find tmc_gazebo_worlds)/worlds/apartment$(arg world_suffix).world" />
+    <param name="/use_sim_time" value="true"/>
+
+    <!-- prepare params.yaml(param command hack) -->
+    <param name="/tmp" command="rosrun tmc_roslaunch_tools symboliclink $(arg param_file) $(find hsrb_common_launch)/params/empty_params.yaml" />
+
+    <group>
+      <remap from="$(arg namespace)/command_velocity" to="$(arg namespace)/opt_command_velocity" />
+      <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="debug" value="$(arg debug)"/>
+        <arg name="world_name" value="$(arg world_name)"/>
+      </include>
+    </group>
+
+    <include file="$(find hsrb_gazebo_launch)/launch/multi_hsrb.launch"/>
+
+    <!-- <include file="$(find hsrb_gazebo_bringup)/launch/include/hsrb.xml">
+        <arg name="robot_pos" value="-x -1 -y -7.5 -z 0.32 -Y 1.57" />
+        <arg name="gazebo_visualization" value="$(arg gazebo_visualization)" />
+        <arg name="use_laser_odom" value="$(arg use_laser_odom)" />
+        <arg name="fast_physics" value="$(arg fast_physics)" />
+        <arg name="robot_name" value="hsrb" />
+    </include> -->
+
+    <group>
+      <include file="$(find hsrb_gazebo_bringup)/launch/include/hsrb_sensor.xml" >
+        <arg name="namespace" value="$(arg namespace)" />
+      </include>
+    </group>
+
+    <node name="talk_action_simulator" pkg="tmc_talk_action_simulator" type="talk_request_server"/>
+
+    <!-- load override parameters-->
+    <rosparam command="load" file="$(arg param_file)" />
+</launch>
