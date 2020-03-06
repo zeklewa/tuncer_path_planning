@@ -32,3 +32,6 @@ Produces the following output:
 Sample maps (small, large_sparse and spec) are included in this repository, on which I primarily tested these algorithms. Results from sample experiments will be posted to this README once more data is obtained.
 
 Also, in the future, this repository will be updated with finer visual displays (possibly a Gazebo simulation) and further tweaks for the multi-robot path planning algorithm.
+
+**HSR Notes:**
+Main test launch file for Gazebo simulation: test_hsrb.launch
