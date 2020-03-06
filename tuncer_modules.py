@@ -215,7 +215,7 @@ def resolve_collision(path1, path2, tr1, tr2, num_nodes):
     # Generate random good inserted nodes for both paths:
     # Maximum of 1000 iterations
     for i in range(1000):
-        print "Iteration %d of generating solution..." % i
+        print "Iteration %d of generating solution (%d inserted nodes)..." % (i, num_nodes)
         extra_path1 = random_good_path_var(path1[tr1], path1[tr1 + 1], num_nodes)
         extra_path2 = random_good_path_var(path2[tr2], path2[tr2 + 1], num_nodes)
         fpath1 = path1[:tr1] + extra_path1[:] + path1[tr1 + 1:]

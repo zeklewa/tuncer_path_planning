@@ -151,7 +151,7 @@ print col_tr1, col_tr2
 if (col_tr1 != -1):
     print "Collision detected!"
     print "Resolving collision, generating possible solutions:"
-    for num_nodes in range(2, 5):
+    for num_nodes in range(1, 10):
         print "### Attempting to insert %d nodes" % num_nodes
         fpath1, fpath2 = resolve_collision(path1[0], path2[0], col_tr1, col_tr2, num_nodes)
         if (fpath1, fpath2) != ([], []): break
