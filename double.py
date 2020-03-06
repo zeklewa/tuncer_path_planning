@@ -94,7 +94,7 @@ for gen in range(tuncer_globals.num_gens):
 	population = new_population[:tuncer_globals.num_population]
 
 # Finished path planning for robot1
-final_path1 = population[0]
+path1 = population[0]
 
 ###############################
 
@@ -140,11 +140,18 @@ path2 = population[0]
 
 print "***"
 print "Initial paths generated:"
-print "Robot1's path: ", final_path1[0]
+print "Robot1's path: ", path1[0]
 print "Robot2's path: ", path2[0]
 print "***"
 
-collision_bool = detect_collision(final_path1[0], path2[0])
-if (collision_bool):
+col_tr1, col_tr2 = detect_collision(path1[0], path2[0])
+
+print col_tr1, col_tr2
+
+if (col_tr1 != -1):
+    print "Collision detected!"
     print "Resolving collision, generating possible solutions:"
+    resolve_collision(path1[0], path2[0], col_tr1, col_tr2, 4)
 print "***"
+
+f.close()

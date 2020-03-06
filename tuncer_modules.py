@@ -46,6 +46,20 @@ def gen_path(start, end):
     path.append(end)
     return path
 
+# Same function, variable num_nodes
+# Generate random path
+def gen_path_var(start, end, num_nodes):
+    path = [start]
+    i = 0
+    while i != num_nodes:
+        node = (random.randrange(tuncer_globals.map_width), random.randrange(tuncer_globals.map_height))
+        if not node in tuncer_globals.obs_map:
+            path.append(node)
+            i += 1
+
+    path.append(end)
+    return path
+
 def crossover(path1, path2):
     cross_point = random.randrange(tuncer_globals.gene_length)
     p1 = path1[:cross_point] + path2[cross_point:]
@@ -65,9 +79,17 @@ def set_trace_path(path):
 def set_collision_path(path):
     return set_trace_path(path) & set(tuncer_globals.obs_map)
 
+# Generate random good path without collisions
 def random_good_path(start, end):
     while True: # Only try a maximum of 50 times for possible candidate (adjustable)
         path = gen_path(start, end)
+        if len(set_collision_path(path)) == 0: return path
+    return []
+
+# Same function, variable num_nodes
+def random_good_path_var(start, end, num_nodes):
+    while True: # Only try a maximum of 50 times for possible candidate (adjustable)
+        path = gen_path_var(start, end, num_nodes)
         if len(set_collision_path(path)) == 0: return path
     return []
 
@@ -134,7 +156,7 @@ def estimate_path_time(path, speed, turn_speed, delta_t):
         r_x = (end_x - start_x)*p_f + start_x
         r_y = (end_y - start_y)*p_f + start_y
 
-        est_coords.append((t, (r_x, r_y)))
+        est_coords.append((t, (r_x, r_y), current_trajectory))
         if t >= cum_line_ts[current_trajectory]:
             current_trajectory += 1
         t += delta_t
@@ -146,18 +168,62 @@ def detect_collision(path1, path2):
     # Naive implementation, will change
     # Collision returns true if the difference between x and y coordinates are too small
 
+    # =================== THIS PART NEEDS TO BE MODIFIED TO ACCOUNT FOR VARIABLE ACCELERATION =====================
     coords1 = estimate_path_time(path1, 2, 0, 0.01)
     coords2 = estimate_path_time(path2, 2, 0, 0.01)
+    # =============================================================================================================
 
     min_length_c = min(len(coords1), len(coords2))
+    max_length_c = max(len(coords1), len(coords2))
 
-    for i in range(min_length_c):
-        x1, y1 = coords1[i][1]
-        x2, y2 = coords2[i][1]
+    for i in range(max_length_c):
+        # Stop conditions
+        if i >= min_length_c:
+            if len(coords1) > len(coords2):
+                x1, y1 = coords1[i][1]
+                x2, y2 = coords2[-1][1]
+                tr1 = coords1[i][2]
+                tr2 = coords2[-1][2]
+            else:
+                x1, y1 = coords1[-1][1]
+                x2, y2 = coords2[i][1]
+                tr1 = coords1[-1][2]
+                tr2 = coords2[i][2]
+        else:  
+            x1, y1 = coords1[i][1]
+            x2, y2 = coords2[i][1]
+            tr1 = coords1[i][2]
+            tr2 = coords2[i][2]
 
         if abs(x2 - x1) < 0.05 and abs(y2 - y1) < 0.05:
-            print "Collision predicted at t = %f and (x, y) = (%f, %f)" % (coords1[i][0], x1, y1)
-            return True
+            if i >= len(coords1):
+                collision_t = coords2[i][0]
+            else:
+                collision_t = coords1[i][0]
+            # print "Collision predicted at t = %f and (x, y) = (%f, %f)" % (collision_t, x1, y1)
+            return (tr1, tr2)
 
-    print "No collisions predicted"
-    return False
+    # print "No collisions predicted"
+    return (-1, -1)
+
+# num_nodes variable denotes number of extra nodes inserted to resolve collision
+def resolve_collision(path1, path2, tr1, tr2, num_nodes):
+    fpath1 = []
+    fpath2 = []
+    i = 0
+
+    # Generate random good inserted nodes for both paths:
+    while True:
+        print "Iteration %d of generating solution..." % i
+        extra_path1 = random_good_path_var(path1[tr1], path1[tr1 + 1], num_nodes)
+        extra_path2 = random_good_path_var(path2[tr2], path2[tr2 + 1], num_nodes)
+        fpath1 = path1[:tr1] + extra_path1[:] + path1[tr1 + 1:]
+        fpath2 = path2[:tr2] + extra_path2[:] + path2[tr2 + 1:]
+        if detect_collision(fpath1, fpath2) == (-1, -1):
+            print "*******************"
+            print "One solution found:"
+            print fpath1
+            print fpath2
+            print "*******************"
+            break
+        i += 1
