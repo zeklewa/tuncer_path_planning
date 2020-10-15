@@ -2,7 +2,7 @@ import pygame
 
 map_name = raw_input("Enter map name: ").strip()
 
-f = open(map_name + ".map", "w+")
+f = open("maps/" + map_name + ".map", "w+")
 
 width = int(input("Enter width of map: "))
 height = int(input("Enter height of map: "))

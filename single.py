@@ -18,7 +18,7 @@ num_nodes = 3 # Number of discreet nodes in a generated path, endpoints not incl
 ### Reading map to tuncer_globals
 map_name = raw_input("Enter map name: ").strip()
 
-f = open(map_name + ".map", "r")
+f = open("maps/" + map_name + ".map", "r")
 
 data = f.readlines()
 
@@ -95,7 +95,7 @@ path = population[0][0]
 path_name = raw_input("Save subpath name: ")
 
 f.close()
-f = open(map_name + "_" + path_name + ".path", "w")
+f = open("paths/" + map_name + "_" + path_name + ".path", "w")
 for x in path:
     f.write("(%d %d) " % (x[0], x[1])),
 f.write("\n")

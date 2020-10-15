@@ -6,7 +6,7 @@ import pygame
 
 # Reading in map
 map_name = raw_input("Enter map name: ").strip()
-f = open(map_name + ".map", "r")
+f = open("maps/" + map_name + ".map", "w+")
 data = f.readlines()
 wh_line = data[0].strip().split()
 width = int(wh_line[0])
@@ -17,7 +17,7 @@ print width, height
 
 # Reading in path
 path_name = raw_input("Enter path name: ").strip()
-f = open(map_name + "_" + path_name + ".path", "r")
+f = open("paths/" + map_name + "_" + path_name + ".path", "w")
 data = f.readlines()
 f.close()
 
